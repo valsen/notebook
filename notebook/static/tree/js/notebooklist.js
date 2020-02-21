@@ -36,7 +36,8 @@ define([
       return item_in(extension(filepath), extensionslist);
     };
 
-    function name_sorter(ascending) {
+    function name_sorter(ascending, natural) {
+        const sorting_target = natural ? 'prepended_name' : 'name';
         return (function(a, b) {
             if (type_order[a['type']] < type_order[b['type']]) {
                 return -1;
@@ -44,10 +45,10 @@ define([
             if (type_order[a['type']] > type_order[b['type']]) {
                 return 1;
             }
-            if (a['name'].toLowerCase() < b['name'].toLowerCase()) {
+            if (a[sorting_target].toLowerCase() < b[sorting_target].toLowerCase()) {
                 return (ascending) ? -1 : 1;
             }
-            if (a['name'].toLowerCase() > b['name'].toLowerCase()) {
+            if (a[sorting_target].toLowerCase() > b[sorting_target].toLowerCase()) {
                 return (ascending) ? 1 : -1;
             }
             return 0;
@@ -83,6 +84,29 @@ define([
           }
 
           return 0;
+        });
+    }
+
+    function prepend_zeros(list) {
+        /**
+         * Adds the property 'prepended_name' to each element in list.content.
+         * The property 'prepended_name' is a zero-padded version of the 
+         * property 'name' of each element in list.content. 
+         * 
+         * The function prepends the minimum number of zeros needed to make 
+         * the length of each 'prepended_name' equal to the longest value 
+         * of 'name' among the content elements.
+         * 
+         * @param  {Array} list
+         */
+        var maxLength = 0;
+        list.content.forEach(elem => {
+          maxLength = Math.max(maxLength, elem.name.length)
+        });
+        list.content.forEach(elem => {
+          const num_zeros = maxLength - elem.name.length;
+          const zeros = '0'.repeat(num_zeros);
+          elem.prepended_name = zeros.concat(elem.name)
         });
     }
 
@@ -128,10 +152,10 @@ define([
                 function(e, d) { that.sessions_loaded(d); });
         }
         this.selected = [];
-        this.sort_function = name_sorter(1);
-        // 0 => descending, 1 => ascending
+        this.sort_direction = 1;  // 0 => descending, 1 => ascending
+        this.natural_sorting = 1; // 0 => non-natural sorting, 1 => natural sorting
+        this.sort_function = name_sorter(this.sort_direction, this.natural_sorting);
         this.sort_id = 'sort-name';
-        this.sort_direction = 1;
         this._max_upload_size_mb = 25;
         this.EDIT_MIMETYPES = [
           'application/javascript',
@@ -268,7 +292,7 @@ define([
 
     NotebookList.prototype.sort_list = function(id, order) {
         if (sort_functions.hasOwnProperty(id)) {
-            this.sort_function = sort_functions[id](order);
+            this.sort_function = sort_functions[id](order, this.natural_sorting); // second argument is only used for name_sorter
             this.draw_notebook_list(this.model_list, this.error_msg);
         } else {
             console.error("No such sort id: '" + id + "'")
@@ -475,6 +499,10 @@ define([
         this.model_list = list;
         this.error_msg = error_msg;
 
+        if (this.sort_id == 'sort-name' && this.natural_sorting) {
+            // prepend zeros to enable natural sorting
+            prepend_zeros(list);
+        }
         list.content.sort(this.sort_function);
         var message = error_msg || i18n.msg._('The notebook list is empty.');
         var item = null;
