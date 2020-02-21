@@ -153,7 +153,7 @@ define([
         }
         this.selected = [];
         this.sort_direction = 1;  // 0 => descending, 1 => ascending
-        this.natural_sorting = 1; // 0 => non-natural sorting, 1 => natural sorting
+        this.natural_sorting = 1; // 0 => standard sorting, 1 => natural sorting
         this.sort_function = name_sorter(this.sort_direction, this.natural_sorting);
         this.sort_id = 'sort-name';
         this._max_upload_size_mb = 25;
