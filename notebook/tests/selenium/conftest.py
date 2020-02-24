@@ -48,6 +48,7 @@ def notebook_server():
         with io.open(os.path.join(pjoin(nbdir, 'My Notebook 10.ipynb')), 'w', encoding='utf-8') as f:
             nb = new_notebook()
             write(nb, f, version=4)
+            #sleep to make sure timestamps are different
             time.sleep(1)
         with io.open(os.path.join(pjoin(nbdir, 'My Notebook 1.ipynb')), 'w', encoding='utf-8') as f:
             nb = new_notebook()
@@ -58,6 +59,20 @@ def notebook_server():
             write(nb, f, version=4)
             time.sleep(1)
 
+        with io.open(os.path.join(pjoin(nbdir, 't1es1t.txt')), 'w', encoding='utf-8') as f:
+            f.write(u't1es1t')
+        with io.open(os.path.join(pjoin(nbdir, 't2es2t.txt')), 'w', encoding='utf-8') as f:
+            f.write(u't2es2t')
+        with io.open(os.path.join(pjoin(nbdir, 't10es10t.txt')), 'w', encoding='utf-8') as f:
+            f.write(u't10es10t')
+
+        
+        with io.open(os.path.join(pjoin(nbdir, '0.1_0.txt')), 'w', encoding='utf-8') as f:
+            f.write(u'.1_0.')
+        with io.open(os.path.join(pjoin(nbdir, '20.0_1.txt')), 'w', encoding='utf-8') as f:
+            f.write(u'.0_1.')
+        with io.open(os.path.join(pjoin(nbdir, '0201.0_0.txt')), 'w', encoding='utf-8') as f:
+            f.write(u'.0_0.')    
         
         info['extra_env'] = {
             'JUPYTER_CONFIG_DIR': pjoin(td, 'jupyter_config'),
