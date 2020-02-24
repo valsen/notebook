@@ -13,6 +13,8 @@ from urllib.parse import urljoin
 
 from selenium.webdriver import Firefox, Remote, Chrome
 from .utils import Notebook
+from nbformat import write
+import io
 
 pjoin = os.path.join
 
@@ -42,6 +44,17 @@ def notebook_server():
         os.makedirs(pjoin(nbdir, u'sub ∂ir1', u'sub ∂ir 1a'))
         os.makedirs(pjoin(nbdir, u'sub ∂ir2', u'sub ∂ir 1b'))
 
+        #creation of three specifically named notebooks for sort testing
+        with io.open(os.path.join(pjoin(nbdir, 'My Notebook 10.ipynb')), 'w', encoding='utf-8') as f:
+            nb = new_notebook()
+            write(nb, f, version=4)
+        with io.open(os.path.join(pjoin(nbdir, 'My Notebook 1.ipynb')), 'w', encoding='utf-8') as f:
+            nb = new_notebook()
+            write(nb, f, version=4)
+        with io.open(os.path.join(pjoin(nbdir, 'My Notebook 2.ipynb')), 'w', encoding='utf-8') as f:
+            nb = new_notebook()
+            write(nb, f, version=4)
+        
         info['extra_env'] = {
             'JUPYTER_CONFIG_DIR': pjoin(td, 'jupyter_config'),
             'JUPYTER_RUNTIME_DIR': pjoin(td, 'jupyter_runtime'),
