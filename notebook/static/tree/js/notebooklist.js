@@ -37,7 +37,7 @@ define([
     };
 
     function name_sorter(ascending, natural) {
-        const sorting_target = natural ? 'prepended_name' : 'name';
+        const sorting_target = natural ? 'zero_padded_name' : 'name';
         return (function(a, b) {
             if (type_order[a['type']] < type_order[b['type']]) {
                 return -1;
@@ -87,15 +87,32 @@ define([
         });
     }
 
-    function prepend_zeros(list) {
-        /**
-         * Adds the property 'prepended_name' to each element in list.content.
-         * The property 'prepended_name' is a zero-padded version of the 
-         * property 'name' of each element in list.content. 
+    function sort(list, sort_id, natural_sorting, sort_function){
+         /**
+         * Sorts the input list based on the current sorting ID (this.sort_id)
+         * and this.natural_sorting.
          * 
-         * The function prepends the minimum number of zeros needed to make 
-         * the length of each 'prepended_name' equal to the longest value 
-         * of 'name' among the content elements.
+         * @param  {Array} list
+         */
+        if (sort_id == 'sort-name' && natural_sorting) {
+            add_zero_padded_names(list);
+            list.content.sort(sort_function);
+            remove_zero_padded_names(list);
+        } else {
+            list.content.sort(sort_function);
+        }
+    }
+
+    function add_zero_padded_names(list) {
+        /**
+         * Adds the property 'zero_padded_name' to each element in list.content.
+         * The property 'zero_padded_name' is a zero-padded version of the 
+         * property 'name' of each element in list.content. The zero-padding
+         * will result in all zero_padded_name being of equal length.
+         * 
+         * Lexicographic sorting, which is the default behavior of 
+         * Array.prototype.sort(), on strings of equal length will result 
+         * in natural sorting, i.e. '2' < '10'.
          * 
          * @param  {Array} list
          */
@@ -106,8 +123,14 @@ define([
         list.content.forEach(elem => {
           const num_zeros = maxLength - elem.name.length;
           const zeros = '0'.repeat(num_zeros);
-          elem.prepended_name = zeros.concat(elem.name)
+          elem.zero_padded_name = zeros.concat(elem.name)
         });
+    }
+
+    function remove_zero_padded_names(list) {
+        list.content.forEach(elem => {
+            delete elem.zero_padded_name;
+        })
     }
 
     var sort_functions = {
@@ -499,11 +522,7 @@ define([
         this.model_list = list;
         this.error_msg = error_msg;
 
-        if (this.sort_id == 'sort-name' && this.natural_sorting) {
-            // prepend zeros to enable natural sorting
-            prepend_zeros(list);
-        }
-        list.content.sort(this.sort_function);
+        sort(list, this.sort_id, this.natural_sorting, this.sort_function)
         var message = error_msg || i18n.msg._('The notebook list is empty.');
         var item = null;
         var model = null;
