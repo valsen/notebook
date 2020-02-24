@@ -48,12 +48,16 @@ def notebook_server():
         with io.open(os.path.join(pjoin(nbdir, 'My Notebook 10.ipynb')), 'w', encoding='utf-8') as f:
             nb = new_notebook()
             write(nb, f, version=4)
+            time.sleep(1)
         with io.open(os.path.join(pjoin(nbdir, 'My Notebook 1.ipynb')), 'w', encoding='utf-8') as f:
             nb = new_notebook()
             write(nb, f, version=4)
+            time.sleep(1)
         with io.open(os.path.join(pjoin(nbdir, 'My Notebook 2.ipynb')), 'w', encoding='utf-8') as f:
             nb = new_notebook()
             write(nb, f, version=4)
+            time.sleep(1)
+
         
         info['extra_env'] = {
             'JUPYTER_CONFIG_DIR': pjoin(td, 'jupyter_config'),
