@@ -107,8 +107,8 @@ define([
         /**
          * Adds the property 'zero_padded_name' to each element in list.content.
          * The property 'zero_padded_name' is a zero-padded version of the 
-         * property 'name' of each element in list.content. The zero-padding
-         * will result in all zero_padded_name being of equal length.
+         * property 'name' of each element. The zero-padding will result in 
+         * all zero_padded_name being of equal length.
          * 
          * Lexicographic sorting, which is the default behavior of 
          * Array.prototype.sort(), on strings of equal length will result 
