@@ -94,7 +94,7 @@ define([
          * 
          * @param  {Array} list
          */
-        if (sort_id == 'sort-name' && natural_sorting) {
+        if (sort_id === 'sort-name' && natural_sorting) {
             add_zero_padded_names(list);
             list.content.sort(sort_function);
             remove_zero_padded_names(list);
@@ -116,14 +116,21 @@ define([
          * 
          * @param  {Array} list
          */
-        var maxLength = 0;
+        let longest_num = 0;
         list.content.forEach(elem => {
-          maxLength = Math.max(maxLength, elem.name.length)
+            const word = elem.name;
+            let numbers = word.split(/\D+/);
+            numbers.forEach(num => {
+                longest_num = Math.max(num.length, longest_num);
+            })
         });
+
+        // following code snippet inspired by https://rosettacode.org/wiki/Natural_sorting#JavaScript
         list.content.forEach(elem => {
-          const num_zeros = maxLength - elem.name.length;
-          const zeros = '0'.repeat(num_zeros);
-          elem.zero_padded_name = zeros.concat(elem.name)
+          elem.zero_padded_name = elem.name.toLowerCase().replace(/\d+/g, num => {
+            num = '0'.repeat(longest_num) + num;
+            return num.substring(num.length - longest_num);
+          });
         });
     }
 
@@ -295,10 +302,10 @@ define([
 
             $('.sort-action').click(function(e) {
                 var sort_on = e.target.id;
-
+                
                 // Clear sort indications in UI
                 $(".sort-action i").removeClass("fa-arrow-up").removeClass("fa-arrow-down");
-
+                
                 if ((that.sort_id === sort_on) && (that.sort_direction === 1)) {
                     that.sort_list(sort_on, 0);
                     $("#" + sort_on + " i").addClass("fa-arrow-up");
@@ -308,7 +315,6 @@ define([
                     $("#" + sort_on + " i").addClass("fa-arrow-down");
                     that.sort_direction = 1;
                 }
-                that.sort_id = sort_on;
             });
         }
     };
@@ -316,6 +322,8 @@ define([
     NotebookList.prototype.sort_list = function(id, order) {
         if (sort_functions.hasOwnProperty(id)) {
             this.sort_function = sort_functions[id](order, this.natural_sorting); // second argument is only used for name_sorter
+            // set global sort_id after sort_function as defined by id parameter has been set
+            this.sort_id = id;
             this.draw_notebook_list(this.model_list, this.error_msg);
         } else {
             console.error("No such sort id: '" + id + "'")
