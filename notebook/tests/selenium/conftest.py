@@ -67,11 +67,11 @@ def notebook_server():
             f.write(u't10es10t')
 
         
-        with io.open(os.path.join(pjoin(nbdir, '0.1_0.txt')), 'w', encoding='utf-8') as f:
+        with io.open(os.path.join(pjoin(nbdir, '0.1.0.txt')), 'w', encoding='utf-8') as f:
             f.write(u'.1_0.')
-        with io.open(os.path.join(pjoin(nbdir, '20.0_1.txt')), 'w', encoding='utf-8') as f:
+        with io.open(os.path.join(pjoin(nbdir, '20.0.1.txt')), 'w', encoding='utf-8') as f:
             f.write(u'.0_1.')
-        with io.open(os.path.join(pjoin(nbdir, '0201.0_0.txt')), 'w', encoding='utf-8') as f:
+        with io.open(os.path.join(pjoin(nbdir, '0201.0.0.txt')), 'w', encoding='utf-8') as f:
             f.write(u'.0_0.')    
         
         info['extra_env'] = {

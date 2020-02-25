@@ -102,26 +102,24 @@ def test_sorting_letters_between_numbers(authenticated_browser):
 def test_sorting_numbers_underscore(authenticated_browser):
     buttons = getButtons(authenticated_browser)
     #assuming such files exist as set in conftest.py
-    myLabels = ["0.1_0.txt", "20.0_1.txt", "0201.0_0.txt"]
+    myLabels = ["0.1.0.txt", "20.0.1.txt", "0201.0.0.txt"]
     notebookList = generateList(authenticated_browser, myLabels)
-    #debugging purposes until natural sort bug is fixed
-    for a in notebookList:
-        print(a)
-    #assert expected results 0201.0_0, 0.1_0, 20.0_1, weird naming conventions may lead to unclear situations
-    #assertCorrectSort(notebookList, myLabels, 2, 1, 0)
-    #buttons[0]['button'].click()
-    #notebookList = generateList(authenticated_browser, myLabels)
-    #assert initial natural sort: 20.0_1, 0.1_0, 0201.0_0
-    #assertCorrectSort(notebookList, myLabels, 1, 0, 2)
+    #assert expected results 0201.0_0, 20.0_1, 0.1.0.txt weird naming conventions may lead to unclear situations
+    #reverse order since button was clicked in test_sorting_letters_beteween_numbers
+    assertCorrectSort(notebookList, myLabels, 2, 1, 0)
+    buttons[0]['button'].click()
+    notebookList = generateList(authenticated_browser, myLabels)
+    #assert initial natural sort:  0.1_0, 20.0_1, 0201.0_0
+    assertCorrectSort(notebookList, myLabels, 0, 1, 2)
     
-
+#returns a generated list of the sorting buttons
 def getButtons(authenticated_browser):
     buttons = [{
     'button': a
     } for a in authenticated_browser.find_elements_by_class_name('sort_button')]    
     return buttons
 
-#generates a list of the current order of items in myLabels
+#returns a generated list of the current order of items in myLabels
 def generateList(authenticated_browser, myLabels):
     items = get_list_items(authenticated_browser)
     notebookList = []
