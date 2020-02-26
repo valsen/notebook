@@ -37,7 +37,6 @@ define([
     };
 
     function name_sorter(ascending, natural) {
-        const sorting_target = natural ? 'zero_padded_name' : 'name';
         return (function(a, b) {
             if (type_order[a['type']] < type_order[b['type']]) {
                 return -1;
@@ -45,14 +44,30 @@ define([
             if (type_order[a['type']] > type_order[b['type']]) {
                 return 1;
             }
-            if (a[sorting_target].toLowerCase() < b[sorting_target].toLowerCase()) {
+            if (natural === 1) {
+                const res = natural_sort(a['name'], b['name']);
+                return (ascending) ? res * (-1) : res;
+            }
+            if (a['name'].toLowerCase() < b['name'].toLowerCase()) {
                 return (ascending) ? -1 : 1;
             }
-            if (a[sorting_target].toLowerCase() > b[sorting_target].toLowerCase()) {
+            if (a['name'].toLowerCase() > b['name'].toLowerCase()) {
                 return (ascending) ? 1 : -1;
             }
             return 0;
         });
+    }
+
+    function natural_sort(a, b) {
+        const a_sub = a.substring(0, a.lastIndexOf('.')) || a;
+        const b_sub = b.substring(0, b.lastIndexOf('.')) || b;
+        let res = b_sub.localeCompare(a_sub, undefined, {numeric: true, sensitivity: 'base'});
+        if (res === 0) {
+            const a_ext = a.substring(a.lastIndexOf('.')) || a;
+            const b_ext = b.substring(b.lastIndexOf('.')) || b;
+            res = natural_sort(a_ext, b_ext);
+        }
+        return res;
     }
 
     function modified_sorter(ascending) {
@@ -87,58 +102,6 @@ define([
         });
     }
 
-    function sort(list, sort_id, natural_sorting, sort_function){
-         /**
-         * Sorts the input list based on the current sorting ID (this.sort_id)
-         * and this.natural_sorting.
-         * 
-         * @param  {Array} list
-         */
-        if (sort_id === 'sort-name' && natural_sorting) {
-            add_zero_padded_names(list);
-            list.content.sort(sort_function);
-            remove_zero_padded_names(list);
-        } else {
-            list.content.sort(sort_function);
-        }
-    }
-
-    function add_zero_padded_names(list) {
-        /**
-         * Adds the property 'zero_padded_name' to each element in list.content.
-         * The property 'zero_padded_name' is a zero-padded version of the 
-         * property 'name' of each element. The zero-padding will result in 
-         * all zero_padded_name being of equal length.
-         * 
-         * Lexicographic sorting, which is the default behavior of 
-         * Array.prototype.sort(), on strings of equal length will result 
-         * in natural sorting, i.e. '2' < '10'.
-         * 
-         * @param  {Array} list
-         */
-        let longest_num = 0;
-        list.content.forEach(elem => {
-            const word = elem.name;
-            let numbers = word.split(/\D+/);
-            numbers.forEach(num => {
-                longest_num = Math.max(num.length, longest_num);
-            })
-        });
-
-        // following code snippet inspired by https://rosettacode.org/wiki/Natural_sorting#JavaScript
-        list.content.forEach(elem => {
-          elem.zero_padded_name = elem.name.toLowerCase().replace(/\d+/g, num => {
-            num = '0'.repeat(longest_num) + num;
-            return num.substring(num.length - longest_num);
-          });
-        });
-    }
-
-    function remove_zero_padded_names(list) {
-        list.content.forEach(elem => {
-            delete elem.zero_padded_name;
-        })
-    }
 
     var sort_functions = {
         'sort-name': name_sorter,
@@ -530,7 +493,7 @@ define([
         this.model_list = list;
         this.error_msg = error_msg;
 
-        sort(list, this.sort_id, this.natural_sorting, this.sort_function)
+        list.content.sort(this.sort_function);
         var message = error_msg || i18n.msg._('The notebook list is empty.');
         var item = null;
         var model = null;
