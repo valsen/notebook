@@ -46,7 +46,7 @@ define([
             }
             if (natural === 1) {
                 const res = natural_sort(a['name'], b['name']);
-                return (ascending) ? res * (-1) : res;
+                return (ascending) ? res : res * (-1);
             }
             if (a['name'].toLowerCase() < b['name'].toLowerCase()) {
                 return (ascending) ? -1 : 1;
@@ -61,7 +61,7 @@ define([
     function natural_sort(a, b) {
         const a_sub = a.substring(0, a.lastIndexOf('.')) || a;
         const b_sub = b.substring(0, b.lastIndexOf('.')) || b;
-        let res = b_sub.localeCompare(a_sub, undefined, {numeric: true, sensitivity: 'base'});
+        let res = a_sub.localeCompare(b_sub, undefined, {numeric: true, sensitivity: 'base'});
         if (res === 0) {
             const a_ext = a.substring(a.lastIndexOf('.')) || a;
             const b_ext = b.substring(b.lastIndexOf('.')) || b;
