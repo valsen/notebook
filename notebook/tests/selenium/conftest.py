@@ -79,6 +79,17 @@ def notebook_server():
         with io.open(os.path.join(pjoin(nbdir, 'test2hej.1a.txt')), 'w', encoding='utf-8') as f:
             f.write(u'.0_1.')
         with io.open(os.path.join(pjoin(nbdir, 'test2hej.txt')), 'w', encoding='utf-8') as f:
+            f.write(u'.0_0.')     
+
+        with io.open(os.path.join(pjoin(nbdir, '1.txt')), 'w', encoding='utf-8') as f:
+            f.write(u'.0_0.')     
+        with io.open(os.path.join(pjoin(nbdir, '1.doc')), 'w', encoding='utf-8') as f:
+            f.write(u'.0_0.')     
+        with io.open(os.path.join(pjoin(nbdir, '1.docx')), 'w', encoding='utf-8') as f:
+            f.write(u'.0_0.')     
+        with io.open(os.path.join(pjoin(nbdir, '1.rtf')), 'w', encoding='utf-8') as f:
+            f.write(u'.0_0.')     
+        with io.open(os.path.join(pjoin(nbdir, '1.py')), 'w', encoding='utf-8') as f:
             f.write(u'.0_0.')      
         
         info['extra_env'] = {
