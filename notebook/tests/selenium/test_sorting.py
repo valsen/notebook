@@ -39,8 +39,8 @@ def get_list_items(browser):
     wait_for_selector(browser, '.item_link')
 
     return [{
-        'label': a.find_element_by_class_name('item_name').text
-    } for a in browser.find_elements_by_class_name('item_link')]
+        'label': a.text
+    } for a in browser.find_elements_by_class_name('item_name')]
 
 def test_all_sorting(authenticated_browser):
     number_of_items = 3
@@ -87,7 +87,7 @@ def test_all_sorting(authenticated_browser):
     assert_correct_sort(notebook_list, my_labels, [0, 1, 2])
 
 
-def test_sorting_letters_between_numbers(authenticated_browser):
+def test_letters_between_numbers(authenticated_browser):
     number_of_items = 3
     buttons = get_buttons(authenticated_browser)
     #assuming such files exist as set in conftest.py
@@ -101,22 +101,22 @@ def test_sorting_letters_between_numbers(authenticated_browser):
     assert_correct_sort(notebook_list, my_labels, [2, 1, 0])
     
     
-def test_sorting_numbers_underscore(authenticated_browser):
+def test_numbers_periods(authenticated_browser):
     number_of_items = 3
     buttons = get_buttons(authenticated_browser)
     #assuming such files exist as set in conftest.py
     my_labels = ["0.1.0.txt", "20.0.1.txt", "0201.0.0.txt"]
     notebook_list = generate_list(authenticated_browser, my_labels, number_of_items)
-    #assert expected results 0201.0_0, 20.0_1, 0.1.0.txt weird naming conventions may lead to unclear situations
+    #assert expected results 0201.0.0, 20.0.1, 0.1.0.txt weird naming conventions may lead to unclear situations
     #reverse order since button was clicked in test_sorting_letters_beteween_numbers
     assert_correct_sort(notebook_list, my_labels, [2, 1, 0])
     buttons[0]['button'].click()
     notebook_list = generate_list(authenticated_browser, my_labels, number_of_items)
-    #assert initial natural sort:  0.1_0, 20.0_1, 0201.0_0
+    #assert initial natural sort:  0.1.0, 20.0.1, 0201.0.   0
     assert_correct_sort(notebook_list, my_labels, [0, 1, 2])
     
 
-def test_sorting_numbers_between_letters(authenticated_browser):
+def test_numbers_between_letters(authenticated_browser):
     number_of_items = 3
     #assuming such files exist as set in conftest.py
     my_labels = ["test10hej.1.txt", "test2hej.1a.txt", "test2hej.txt"]
@@ -124,16 +124,28 @@ def test_sorting_numbers_between_letters(authenticated_browser):
     #assert expected results test2hej.txt, test2hej.1a.txt, test10hej.1.txt weird naming conventions may lead to unclear situations
     assert_correct_sort(notebook_list, my_labels, [2, 1, 0])
 
-def test_sorting_same_name_different_extensions(authenticated_browser):
+def test_same_name_different_extensions(authenticated_browser):
     number_of_items = 5
-    buttons = get_buttons(authenticated_browser)
     #assuming such files exist as set in conftest.py
-    #buttons[0]['button'].click()
     my_labels = ["1.txt", "1.doc", "1.docx", "1.rtf", "1.py"]
     notebook_list = generate_list(authenticated_browser, my_labels, number_of_items)
     #assert doc, docx, py, rtf, txt
     assert_correct_sort(notebook_list, my_labels, [4,0,1,3,2])
 
+def test_many_potential_extensions(authenticated_browser):
+    number_of_items = 3
+    my_labels = ['1.txt.txt.doc', '1.txt.doc.doc', '1.txt.doc.txt']
+    notebook_list = generate_list(authenticated_browser, my_labels, number_of_items)
+    #assert txt.doc.doc, txt.doc.txt, txt.txt.doc
+    assert_correct_sort(notebook_list, my_labels, [2,0,1])
+ 
+def test_file_with_extension_compared_to_file_with_no_extension(authenticated_browser):
+    number_of_items = 2
+    my_labels = ['a', 'a.txt']
+    notebook_list = generate_list(authenticated_browser, my_labels, number_of_items)
+    #assert a before a.txt
+    assert_correct_sort(notebook_list, my_labels, [0, 1])
+    
 #returns a generated list of the sorting buttons
 def get_buttons(authenticated_browser):
     buttons = [{

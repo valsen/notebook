@@ -48,7 +48,7 @@ def notebook_server():
         #creation of a great number of differently named files for sort testing
         make_file(nbdir, ['t1es1t.txt','t2es2t.txt', 't10es10t.txt','0.1.0.txt','20.0.1.txt',
         '0201.0.0.txt', 'test10hej.1.txt', 'test2hej.1a.txt', 'test2hej.txt', '1.txt',
-        '1.doc', '1.docx', '1.rtf', '1.py'])
+        '1.doc', '1.docx', '1.rtf', '1.py', '1.txt.txt.doc', '1.txt.doc.doc', '1.txt.doc.txt', 'a', 'a.txt'])
         
         info['extra_env'] = {
             'JUPYTER_CONFIG_DIR': pjoin(td, 'jupyter_config'),
