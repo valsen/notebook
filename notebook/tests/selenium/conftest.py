@@ -43,54 +43,12 @@ def notebook_server():
         nbdir = info['nbdir'] = pjoin(td, 'notebooks')
         os.makedirs(pjoin(nbdir, u'sub ∂ir1', u'sub ∂ir 1a'))
         os.makedirs(pjoin(nbdir, u'sub ∂ir2', u'sub ∂ir 1b'))
-
         #creation of three specifically named notebooks for sort testing
-        with io.open(os.path.join(pjoin(nbdir, 'My Notebook 10.ipynb')), 'w', encoding='utf-8') as f:
-            nb = new_notebook()
-            write(nb, f, version=4)
-            #sleep to make sure timestamps are different
-            time.sleep(1)
-        with io.open(os.path.join(pjoin(nbdir, 'My Notebook 1.ipynb')), 'w', encoding='utf-8') as f:
-            nb = new_notebook()
-            write(nb, f, version=4)
-            time.sleep(1)
-        with io.open(os.path.join(pjoin(nbdir, 'My Notebook 2.ipynb')), 'w', encoding='utf-8') as f:
-            nb = new_notebook()
-            write(nb, f, version=4)
-            time.sleep(1)
-
-        with io.open(os.path.join(pjoin(nbdir, 't1es1t.txt')), 'w', encoding='utf-8') as f:
-            f.write(u't1es1t')
-        with io.open(os.path.join(pjoin(nbdir, 't2es2t.txt')), 'w', encoding='utf-8') as f:
-            f.write(u't2es2t')
-        with io.open(os.path.join(pjoin(nbdir, 't10es10t.txt')), 'w', encoding='utf-8') as f:
-            f.write(u't10es10t')
-
-        
-        with io.open(os.path.join(pjoin(nbdir, '0.1.0.txt')), 'w', encoding='utf-8') as f:
-            f.write(u'.1_0.')
-        with io.open(os.path.join(pjoin(nbdir, '20.0.1.txt')), 'w', encoding='utf-8') as f:
-            f.write(u'.0_1.')
-        with io.open(os.path.join(pjoin(nbdir, '0201.0.0.txt')), 'w', encoding='utf-8') as f:
-            f.write(u'.0_0.')  
-
-        with io.open(os.path.join(pjoin(nbdir, 'test10hej.1.txt')), 'w', encoding='utf-8') as f:
-            f.write(u'.1_0.')
-        with io.open(os.path.join(pjoin(nbdir, 'test2hej.1a.txt')), 'w', encoding='utf-8') as f:
-            f.write(u'.0_1.')
-        with io.open(os.path.join(pjoin(nbdir, 'test2hej.txt')), 'w', encoding='utf-8') as f:
-            f.write(u'.0_0.')     
-
-        with io.open(os.path.join(pjoin(nbdir, '1.txt')), 'w', encoding='utf-8') as f:
-            f.write(u'.0_0.')     
-        with io.open(os.path.join(pjoin(nbdir, '1.doc')), 'w', encoding='utf-8') as f:
-            f.write(u'.0_0.')     
-        with io.open(os.path.join(pjoin(nbdir, '1.docx')), 'w', encoding='utf-8') as f:
-            f.write(u'.0_0.')     
-        with io.open(os.path.join(pjoin(nbdir, '1.rtf')), 'w', encoding='utf-8') as f:
-            f.write(u'.0_0.')     
-        with io.open(os.path.join(pjoin(nbdir, '1.py')), 'w', encoding='utf-8') as f:
-            f.write(u'.0_0.')      
+        make_notebook(nbdir, ['10', '1', '2'])
+        #creation of a great number of differently named files for sort testing
+        make_file(nbdir, ['t1es1t.txt','t2es2t.txt', 't10es10t.txt','0.1.0.txt','20.0.1.txt',
+        '0201.0.0.txt', 'test10hej.1.txt', 'test2hej.1a.txt', 'test2hej.txt', '1.txt',
+        '1.doc', '1.docx', '1.rtf', '1.py'])
         
         info['extra_env'] = {
             'JUPYTER_CONFIG_DIR': pjoin(td, 'jupyter_config'),
@@ -119,6 +77,23 @@ def notebook_server():
     # Shut the server down
     requests.post(urljoin(info['url'], 'api/shutdown'),
                   headers={'Authorization': 'token '+info['token']})
+
+
+#function to make notebooks for a session
+def make_notebook(nbdir, number_of_notebook):
+    for n in number_of_notebook:
+        new_notebook_name = "My Notebook " + n + ".ipynb"
+        with io.open(os.path.join(pjoin(nbdir, new_notebook_name)), 'w', encoding='utf-8') as f:
+            nb = new_notebook()
+            write(nb, f, version=4)
+            #sleep to make sure timestamps are different
+            time.sleep(1)
+
+#function to make files for a session
+def make_file(nbdir, name_of_file):
+    for file in name_of_file:
+         with io.open(os.path.join(pjoin(nbdir, file)), 'w', encoding='utf-8') as f:
+            f.write(u'testfile')
 
 
 def make_sauce_driver():
