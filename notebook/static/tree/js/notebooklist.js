@@ -44,7 +44,7 @@ define([
             if (type_order[a['type']] > type_order[b['type']]) {
                 return 1;
             }
-            if (natural === 1) {
+            if (natural) {
                 const res = natural_sort(a['name'], b['name']);
                 return (ascending) ? res : res * (-1);
             }
