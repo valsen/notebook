@@ -86,8 +86,8 @@ def test_all_sorting(authenticated_browser):
     #assert initial natural sort: 1, 2, 10
     assert_correct_sort(notebook_list, my_labels, [0, 1, 2])
 
-
-def test_letters_between_numbers(authenticated_browser):
+#tests that file names with numbers between letters are sorted appropriately
+def test_natural_letters_between_numbers(authenticated_browser):
     number_of_items = 3
     buttons = get_buttons(authenticated_browser)
     #assuming such files exist as set in conftest.py
@@ -100,8 +100,8 @@ def test_letters_between_numbers(authenticated_browser):
     #assert initial natural sort: te10st, te2st, te1st
     assert_correct_sort(notebook_list, my_labels, [2, 1, 0])
     
-    
-def test_numbers_periods(authenticated_browser):
+#tests that files with names that includes periods or zeroes prior to a number are sorted appropriately
+def test_natural_numbers_periods(authenticated_browser):
     number_of_items = 3
     buttons = get_buttons(authenticated_browser)
     #assuming such files exist as set in conftest.py
@@ -115,8 +115,8 @@ def test_numbers_periods(authenticated_browser):
     #assert initial natural sort:  0.1.0, 20.0.1, 0201.0.   0
     assert_correct_sort(notebook_list, my_labels, [0, 1, 2])
     
-
-def test_numbers_between_letters(authenticated_browser):
+#tests that files with names that may be of the same length with numbers and special characters are sorted appropriately
+def test_natural_numbers_between_letters(authenticated_browser):
     number_of_items = 3
     #assuming such files exist as set in conftest.py
     my_labels = ["test10hej.1.txt", "test2hej.1a.txt", "test2hej.txt"]
@@ -124,7 +124,8 @@ def test_numbers_between_letters(authenticated_browser):
     #assert expected results test2hej.txt, test2hej.1a.txt, test10hej.1.txt weird naming conventions may lead to unclear situations
     assert_correct_sort(notebook_list, my_labels, [2, 1, 0])
 
-def test_same_name_different_extensions(authenticated_browser):
+#tests that files with the same file name but different extensions are sorted according to extension
+def test_natural_same_name_different_extensions(authenticated_browser):
     number_of_items = 5
     #assuming such files exist as set in conftest.py
     my_labels = ["1.txt", "1.doc", "1.docx", "1.rtf", "1.py"]
@@ -132,14 +133,16 @@ def test_same_name_different_extensions(authenticated_browser):
     #assert doc, docx, py, rtf, txt
     assert_correct_sort(notebook_list, my_labels, [4,0,1,3,2])
 
-def test_many_potential_extensions(authenticated_browser):
+#tests that only the actual extension matters for the sorting files with multiple potential extensions
+def test_natural_many_potential_extensions(authenticated_browser):
     number_of_items = 3
     my_labels = ['1.txt.txt.doc', '1.txt.doc.doc', '1.txt.doc.txt']
     notebook_list = generate_list(authenticated_browser, my_labels, number_of_items)
     #assert txt.doc.doc, txt.doc.txt, txt.txt.doc
     assert_correct_sort(notebook_list, my_labels, [2,0,1])
- 
-def test_file_with_extension_compared_to_file_with_no_extension(authenticated_browser):
+
+#tests that file without an extension with the same name as a file with an extension will be placed first. 
+def test_natural_file_with_extension_compared_to_file_with_no_extension(authenticated_browser):
     number_of_items = 2
     my_labels = ['a', 'a.txt']
     notebook_list = generate_list(authenticated_browser, my_labels, number_of_items)
