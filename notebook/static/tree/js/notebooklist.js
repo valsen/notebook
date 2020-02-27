@@ -63,9 +63,15 @@ define([
         const b_sub = b.substring(0, b.lastIndexOf('.')) || b;
         let res = a_sub.localeCompare(b_sub, undefined, {numeric: true, sensitivity: 'base'});
         if (res === 0) {
-            const a_ext = a.substring(a.lastIndexOf('.')) || a;
-            const b_ext = b.substring(b.lastIndexOf('.')) || b;
-            res = natural_sort(a_ext, b_ext);
+            let a_ext = a.substring(a.lastIndexOf('.'));
+            let b_ext = b.substring(b.lastIndexOf('.'));
+            if (a_ext === a ){
+                a_ext = ''
+            }
+            if (b_ext === b){
+                b_ext = ''
+            }
+            res = a_ext.localeCompare(b_ext, undefined, {numeric:true, sensitivity:'base'});
         }
         return res;
     }
