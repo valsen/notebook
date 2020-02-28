@@ -59,6 +59,10 @@ define([
     }
 
     function natural_sort(a, b) {
+        /** 
+         *  Performs a natural (alphanumeric) sort on a and b without their
+         *  respective extensions. If equal, sorts on their extensions.
+         **/   
         const a_sub = a.substring(0, a.lastIndexOf('.')) || a;
         const b_sub = b.substring(0, b.lastIndexOf('.')) || b;
         let res = a_sub.localeCompare(b_sub, undefined, {numeric: true, sensitivity: 'base'});
